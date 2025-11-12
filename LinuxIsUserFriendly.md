@@ -1,6 +1,6 @@
 # Secondary SSD not mounting on startup
 
-In Terminal run:
+In terminal run:
 
 `lsblk -o PATH,LABEL,SIZE,RO,TYPE,MOUNTPOINT,UUID,MODEL`
 
@@ -12,11 +12,9 @@ Run:
 
 Add the following:
 
-    UUID=[uuid] $mountpoint ext4 defaults 0 0
+    UUID=$uuid $mountpoint ext4 defaults 0 0
 
-Ctrl+X -> Y to save and exit.
-
-Reboot the computer. The drive should be mounted.
+Save the file, reboot. The drive should be mounted.
 
 # Bluetooth device connection failing
 
@@ -34,7 +32,7 @@ With:
 
     GRUB_CMDLINE_LINUX_DEFAULT="quiet splash btusb.enable_autosuspend=n usbcore.autosuspend=-1 usbcore.autosuspend_delay_ms=-1"
 
-Ctrl+X -> Y to save and exit.
+Ctrl+X -> Y to save.
 
 Run `sudo update-grub`.
 
@@ -46,27 +44,28 @@ Bluetooth devices taking a couple of seconds after logging in to start working.
 
 [Thanks to /u/floofly on r/linux4noobs for this!](https://www.reddit.com/r/linux4noobs/comments/1k9rapk/comment/mpgfifn/)
 
-> Assuming you're using systemd as you innit system. The following will change it so your bluetooth will initialise before the GUI.
+> Assuming you're using systemd as you innit system. The following will change it so your bucktooth will initialise before the GUI.
 >
 > `sudo systemctl edit bluetooth.service`
 >
 > change:
->
->     [Unit]
->     
->     Before=graphical.target
+> 
+> ```toml
+> [boot]
+> Before=graphical.target
+> ```
 
-## Noob friendly
+Noob friendly:
 
 ### Is my innit system systemd?
 
-Run `systemctl --version` in Terminal. First line should read something like `systemd 257 (257.5-2-arch)`. If it says `systemd`, it's `systemd`.
+Run `systemctl --version` in Terminal. First line should read something like `systemd 257 (257.5-2-arch)`.
 
 ### How to make the change?
 
 Run `sudo systemctl edit bluetooth.service` in Terminal. You'll see something like this:
 
-```
+```toml
 ### Editing /etc/systemd/system/bluetooth.service.d/override.conf
 ### Anything between here and the comment below will become the contents of the drop-in file
 
@@ -84,7 +83,7 @@ Run `sudo systemctl edit bluetooth.service` in Terminal. You'll see something li
 
 Make it look like this:
 
-```
+```toml
 ### Editing /etc/systemd/system/bluetooth.service.d/override.conf
 ### Anything between here and the comment below will become the contents of the drop-in file
 
@@ -102,7 +101,7 @@ Before=graphical.target
 # ConditionPathIsDirectory=/sys/class/bluetooth
 ```
 
-# AppImage file failing to start - "binary found, misconfigured" error
+# AppImage file failing to start - binary found, misconfigured
 
 ## Error message
 
@@ -120,11 +119,11 @@ Before=graphical.target
 > 
 > The solution is to lift the restrictions that Ubuntu 24.04 implements in the AppImages.
 > 
-> `sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0`
+>     sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 > 
 > for deactivate restrictions
 > 
-> `sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1`
+>     sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
 > 
 > for activate restrictions
 
@@ -161,3 +160,7 @@ Location is:
 System Settings -> Input & Output -> Mouse & Touchpad -> Screen Edges
 
 Change **Edge barrier** to 0 px/None.
+
+# Stop OS from switching BT headset to "hands free"
+
+    systemctl --user restart wireplumber pipewire pipewire-pulse
