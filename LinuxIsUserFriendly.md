@@ -153,7 +153,13 @@ Location is:
 
 # Signal - set spellcheck for multiple languages
 
+## Flatpak version
+
 `flatpak override --user --env=LANGUAGE=en_GB.UTF-8:pl_PL.UTF-8:sv_SE.UTF-8 org.signal.Signal`
+
+## Non-flatpak version
+
+Uninstall and install via flatpak.
 
 # Sticky edge between two screens
 
